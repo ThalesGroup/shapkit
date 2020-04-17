@@ -2,12 +2,14 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"MonteCarloShapley": "monte_carlo_shapley.ipynb",
+index = {"inspector": "inspector.ipynb",
+         "MonteCarloShapley": "monte_carlo_shapley.ipynb",
          "ncr": "sgd_shapley.ipynb",
          "SGDshapley": "sgd_shapley.ipynb",
          "ShapleyValues": "shapley_values.ipynb"}
 
-modules = ["monte_carlo_shapley.py",
+modules = ["inspector.py",
+           "monte_carlo_shapley.py",
            "sgd_shapley.py",
            "shapley_values.py"]
 

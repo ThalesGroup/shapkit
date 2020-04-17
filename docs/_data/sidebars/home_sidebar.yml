@@ -10,6 +10,9 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
+      title: Title
+      url: /inspector
+    - output: web,pdf
       title: Monte Carlo Shapley
       url: /monte_carlo_shapley
     - output: web,pdf
