@@ -2,9 +2,14 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"ShapleyValues": "shapleyvalues.ipynb"}
+index = {"MonteCarloShapley": "monte_carlo_shapley.ipynb",
+         "ncr": "sgd_shapley.ipynb",
+         "SGDshapley": "sgd_shapley.ipynb",
+         "ShapleyValues": "shapley_values.ipynb"}
 
-modules = ["shapleyvalues.py"]
+modules = ["monte_carlo_shapley.py",
+           "sgd_shapley.py",
+           "shapley_values.py"]
 
 doc_url = "https://simon.grah.github.io/shapkit_nbdev/"
 

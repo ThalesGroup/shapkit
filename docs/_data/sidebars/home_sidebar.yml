@@ -10,8 +10,14 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: ShapleyValues
-      url: /shapleyvalues
+      title: Monte Carlo Shapley
+      url: /monte_carlo_shapley
+    - output: web,pdf
+      title: Projected Stochastic Gradient Shapley
+      url: /sgd_shapley
+    - output: web,pdf
+      title: Shapley Value
+      url: /shapley_values
     output: web
     title: shapkit_nbdev
   output: web
