@@ -26,33 +26,19 @@ where $\rho\text{: } t \rightarrow \sqrt{(0.5 \pi)} \exp(- t^2 /2)$. The regress
 	
 
 ```python
-def generate_sample(dim, n_samples, rho=0):
-    """
-    Generate a dataset of independent Gaussian features
-    """
-    mu = np.zeros(dim)
-    sigma = np.ones((dim, dim)) * rho
-    np.fill_diagonal(sigma, [1] * dim)
-    # Simulation
-    X = np.random.multivariate_normal(mean=mu, cov=sigma, size=n_samples)
-    df_X = pd.DataFrame(X, columns=['x'+str(i) for i in range(1, dim+1)])
-    return df_X
-```
-
-```python
 d, n_samples = 5, 100
-X = generate_sample(d, n_samples)
-y = np.zeros(len(X))
-for i in range(len(X)):
-    phi_x = np.sqrt(.5 * np.pi) * np.exp(-0.5 * X.values[i] ** 2)
-    y[i] = np.prod(phi_x)
-```
-
-```python
-n = 2**d - 2
+mu = np.zeros(d)
+Sigma = np.zeros((d,d))
+np.fill_diagonal(Sigma, [1] * d)
+X = np.random.multivariate_normal(mean=mu, cov=Sigma, size=n_samples)
+X = pd.DataFrame(X, columns=['x'+str(i) for i in range(1, d+1)])
 def fc(x):
     phi_x = np.sqrt(.5 * np.pi) * np.exp(-0.5 * x ** 2)
     return np.prod(phi_x)
+y = np.zeros(len(X))
+for i in range(len(X)):
+    y[i] = fc(X.values[i])
+n = 2**d - 2
 print("dimension = {0} ; nb of coalitions = {1}".format(str(d), str(n)))
 ```
 
@@ -77,7 +63,7 @@ from shapkit_nbdev.sgd_shapley import SGDshapley
 true_shap = ShapleyValues(x=x, fc=fc, r=r)
 ```
 
-    100%|██████████| 5/5 [00:00<00:00, 483.33it/s]
+    100%|██████████| 5/5 [00:00<00:00, 296.03it/s]
 
 
 ```python
@@ -87,11 +73,11 @@ true_shap
 
 
 
-    x1    0.051504
-    x2   -0.059734
-    x3    0.165201
-    x4   -0.167416
-    x5    0.149816
+    x1    0.405936
+    x2   -0.206316
+    x3    0.467009
+    x4    0.068731
+    x5    0.006309
     dtype: float64
 
 
@@ -102,7 +88,7 @@ true_shap
 mc_shap = MonteCarloShapley(x=x, fc=fc, r=r, n_iter=100, callback=None)
 ```
 
-    100%|██████████| 100/100 [00:00<00:00, 4785.18it/s]
+    100%|██████████| 100/100 [00:00<00:00, 5709.10it/s]
 
 
 ```python
@@ -112,11 +98,11 @@ mc_shap
 
 
 
-    x1    0.049357
-    x2   -0.054322
-    x3    0.162383
-    x4   -0.169489
-    x5    0.151442
+    x1    0.429189
+    x2   -0.207783
+    x3    0.453132
+    x4    0.060524
+    x5    0.006608
     dtype: float64
 
 
@@ -128,7 +114,7 @@ sgd_est = SGDshapley(d, C=y.max())
 sgd_shap = sgd_est.sgd(x=x, fc=fc, r=r, n_iter=1000, step=.1, step_type="sqrt")
 ```
 
-    100%|██████████| 1000/1000 [00:00<00:00, 8021.88it/s]
+    100%|██████████| 1000/1000 [00:00<00:00, 7572.20it/s]
 
 
 ```python
@@ -138,11 +124,11 @@ sgd_shap
 
 
 
-    x1    0.050282
-    x2   -0.048745
-    x3    0.149134
-    x4   -0.147864
-    x5    0.136565
+    x1    0.367332
+    x2   -0.173752
+    x3    0.449700
+    x4    0.076825
+    x5    0.021565
     dtype: float64
 
 

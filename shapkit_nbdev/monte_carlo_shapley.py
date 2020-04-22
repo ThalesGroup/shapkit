@@ -17,47 +17,40 @@ def MonteCarloShapley(x, fc, r, n_iter, callback=None):
     feature_names = list(x.index)
     d = len(feature_names) # dimension
 
-#     # If x[j] = r[j] => Φ[j] = 0 and we can reduce the dimension
-#     distinct_feature_names = list(x[x!=r].index)
-#     if set(distinct_feature_names) == set(feature_names):
-#         pass
-#     else: # the problem dimension is lowered
-#         sub_dim = True
-#         feature_names = distinct_feature_names
-#         d = len(feature_names) # new dimension
-#         print("new dimension {0}".format(d))
+    # If x[j] = r[j] => Φ[j] = 0 and we can reduce the dimension
+    distinct_feature_names = list(x[x!=r].index)
+    if set(distinct_feature_names) == set(feature_names):
+        distinct_feature_names = feature_names
+        sub_d = d
+        x_cp = x.copy()
+        r_cp = r.copy()
+        reward = lambda z: fc(z)
+        pass
+    else:
+        sub_d = len(distinct_feature_names) # new dimension
+        x_cp = x[distinct_feature_names].copy()
+        r_cp = r[distinct_feature_names].copy()
+        print("new dimension {0}".format(sub_d))
+        def reward(z):
+            z_tmp = r.copy()
+            z_tmp[distinct_feature_names] = z
+            return fc(z_tmp.values)
 
-    # Store Shapley Values in a pandas Series
-    # Φ = pd.Series(np.zeros(d), index=feature_names)
-    Φ_storage = np.empty((n_iter,d))
-    # Store also the sample variance of the estimator
-    # σ2 = pd.Series(np.zeros(d), index=feature_names)s
+    # Store all Shapley Values in a numpy array
+    Φ_storage = np.empty((n_iter, sub_d))
 
     # Monte Carlo loop
     for m in tqdm(range(1, n_iter+1)):
         # Sample a random permutation order
-        o = np.random.permutation(d)
+        o = np.random.permutation(sub_d)
         # init useful variables for this iteration
         f_less_j = f_r
-        x_plus_j = r.values.copy()
-#         x_plus_j = r.copy()
+        x_plus_j = r_cp.values.copy()
         for j in o:
-#             if sub_dim:
-#                 name_j = feature_names[j]
-#                 x_plus_j.loc[name_j] = x[name_j]
-#                 f_plus_j = fc(x_plus_j.values)
-#             else:
-            x_plus_j[j] = x.values[j]
-#             x_plus_j.values[j] = x.values[j]
-            f_plus_j = fc(x_plus_j)
-            # update Φ and σ²
+            x_plus_j[j] = x_cp.values[j]
+            f_plus_j = reward(x_plus_j)
+            # update Φ
             Φ_j = f_plus_j - f_less_j
-            # if m == 1:
-            #     Φ[name_j] = Φ_j
-            # else:
-            #     # σ2[name_j] = (m-2)/(m-1) * σ2[name_j] + (Φ_j - Φ[name_j])**2/m
-            #     Φ[name_j] = (m-1)/m * Φ[name_j] + 1/m * Φ_j
-            # Φ[j] += 1/n_iter * Φ_j
             Φ_storage[m-1,j] = Φ_j
             # reassign f_less_j
             f_less_j = f_plus_j
@@ -65,7 +58,7 @@ def MonteCarloShapley(x, fc, r, n_iter, callback=None):
             Φ = pd.Series(np.mean(Φ_storage[:m,:],axis=0), index=feature_names)
             callback(Φ)
 
-    Φ = pd.Series(np.mean(Φ_storage,axis=0), index=feature_names)
-
+    Φ_mean = np.mean(Φ_storage,axis=0)
+    Φ = pd.Series(np.zeros(d), index=feature_names)
+    Φ[distinct_feature_names] = Φ_mean
     return Φ
-    # return Φ #, σ2

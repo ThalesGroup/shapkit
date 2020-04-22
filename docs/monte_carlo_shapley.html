@@ -59,12 +59,7 @@ $$ \sum_{j=1}^{d} \phi_j = f(\mathbf{x^*}) - f(\mathbf{r}), $$
 where $\phi_j$ is the attribute contribution of feature indexed $j$.  We loosely identify each feature by its column number. Here the set of players $\mathcal{M}=\{1, \dots, d\}$ is the feature set.</p>
 <p>In Machine Learning, a common choice for the reward is $ v(S) = \mathbb{E}[f(X) | X_S = \mathbf{x_S^*}]$, where $\mathbf{x_S^*}=(x_j^*)_{j\in S}$ and $X_S$ the element of $X$ for the coalition $S$. 
 For any $S\subset\mathcal{M}$, let's define $ z(\mathbf{x^*},\mathbf{r},S)$ such that $z(\mathbf{x^*},\mathbf{r},\emptyset) = \mathbf{r}$, \ $z(\mathbf{x^*},\mathbf{r},\mathcal{M}) = \mathbf{x^*}$ and</p>
-$$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,..., z_d) \text{ with } z_i =  \left\{
-\begin{array}{ll}
-x_i^* &amp; \mbox{if} \ i \in S \\
-r_i &amp; \mbox{if} \ i \notin S
-\end{array}
-\right. .$$<p></p>
+$$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \text{ if } i \in S \text{ and } r_i  \text{ otherwise }$$<p></p>
 <p>As explain in [Merrick,2019], each reference $\textbf{r}$ sets a single-game with $ v(S) = f(z(\mathbf{x^*},\mathbf{r},S)) - f(\mathbf{r}) $, $v(\emptyset) = 0 $ and $v(\mathcal{M}) = f(\mathbf{x^*}) - f(\mathbf{r}) $.</p>
 
 </div>
@@ -85,12 +80,7 @@ r_i &amp; \mbox{if} \ i \notin S
 &emsp;&emsp;(a).&emsp;Choose the subset resulting of an uniform permutation $O\in\pi(\{1, \dots,d\})$ of the features values \;<br>
 &emsp;&emsp;(b).&emsp; $v^{(1)} = v(\mathbf{r})$, $\mathbf{b} = \mathbf{r}$ \;<br>
 &emsp;&emsp;(c).&emsp; For j in $O$:<br>
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\mathbf{b} = \left\{
-\begin{array}{ll}
-x_i^* &amp; \mbox{if} \ i = j \\
-b_i &amp; \mbox{if} \ i \neq j
-\end{array}
-\right.$, with $i\in\{1, \dots, d\}$ \;<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\mathbf{b} = x_i^* \text{ if } i = j \text{ and } b_i \text{ otherwise}$, with $i\in\{1, \dots, d\}$ \;<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$ v^{(2)} = v(\mathbf{b})$ \;<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\phi_j =  v^{(2)} - v^{(1)}$ \;<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Update online $\widehat{\phi}$ and $\widehat{\sigma^2}$ (if $t &gt; 1$):<br>
@@ -195,59 +185,19 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">generate_sample</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generate a dataset of independent Gaussian features</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span> <span class="o">*</span> <span class="n">rho</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">dim</span><span class="p">)</span>
-    <span class="c1"># Simulation</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
-    <span class="n">df_X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
-    <span class="k">return</span> <span class="n">df_X</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">generate_sample</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
-    <span class="n">phi_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">phi_x</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">d</span> <span class="o">-</span> <span class="mi">2</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">Sigma</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">Sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
 <span class="k">def</span> <span class="nf">fc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">phi_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">phi_x</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">d</span> <span class="o">-</span> <span class="mi">2</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dimension = </span><span class="si">{0}</span><span class="s2"> ; nb of coalitions = </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
 </pre></div>
 
@@ -311,7 +261,7 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 100/100 [00:00&lt;00:00, 6739.79it/s]
+<pre>100%|██████████| 100/100 [00:00&lt;00:00, 5134.42it/s]
 </pre>
 </div>
 </div>
@@ -344,11 +294,11 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>x1    0.241355
-x2   -0.399226
-x3    0.288679
-x4    0.037454
-x5    0.079285
+<pre>x1    0.373885
+x2    0.423093
+x3   -0.001848
+x4    0.005464
+x5    0.012445
 dtype: float64</pre>
 </div>
 
@@ -396,6 +346,38 @@ dtype: float64</pre>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shap</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shap</span> <span class="o">-</span> <span class="n">true_shap</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 5/5 [00:00&lt;00:00, 447.71it/s]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
