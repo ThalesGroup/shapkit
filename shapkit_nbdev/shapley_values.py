@@ -10,7 +10,7 @@ from math import factorial
 from tqdm import tqdm
 
 # Cell
-def ShapleyValues(x, fc, r):
+def ShapleyValues(x, fc, ref, K=10):
     """
     Calculate the exact Shapley Values for an individual x
     in a game based on a reference r and the reward function fc.
@@ -24,6 +24,31 @@ def ShapleyValues(x, fc, r):
     # Store Shapley Values in a pandas Series
     Φ = pd.Series(np.zeros(d), index=feature_names)
 
+    # Individual reference or dataset of references
+    def output_single_ref(coalition, feature_names):
+        z = np.array([x[col] if col in coalition else ref.loc[col] for col in feature_names])
+        return fc(z)
+
+    def output_several_ref(coalition, feature_names):
+        rewards = []
+        idxs = np.random.choice(ref.index, size=K)
+        for idx in idxs:
+            z = np.array([x[col] if col in coalition else ref.loc[idx, col] for col in feature_names])
+            rewards.append(fc(z))
+        return np.mean(rewards)
+
+    if isinstance(ref, pd.core.series.Series):
+        individual_ref = True
+        output = output_single_ref
+    elif isinstance(ref, pd.core.frame.DataFrame):
+        if ref.shape[0] == 1:
+            ref = ref.iloc[0]
+            individual_ref = True
+            output = output_single_ref
+        else:
+            individual_ref = False
+            output = output_several_ref
+
     # Start computation (number of coalitions: 2**d - 1)
     for cardinal_S in tqdm(range(0, d)):
         # weight
@@ -32,14 +57,23 @@ def ShapleyValues(x, fc, r):
         # iter over all combinations of size cardinal_S
         for S in combinations(feature_names, cardinal_S):
             S = list(S)
-            z_S = np.array([x[col] if col in S else r[col] for col in feature_names])
-            f_S = fc(z_S)
+            f_S = output(S, feature_names)
             # Consider only features outside of S
             features_out_S = set_features - set(S)
             for j in features_out_S:
                 S_union_j = S + [j]
-                z_S_union_j = np.array([x[col] if col in S_union_j else r[col] for col in feature_names])
-                f_S_union_j = fc(z_S_union_j)
+                try:
+                    f_S_union_j = output(S_union_j, feature_names)
+                except:
+                    rewards = []
+                    idxs = np.random.choice(ref.index, size=K, replace=False)
+                    print(idxs)
+                    for idx in idxs:
+                        z = np.array([x[col] if col in S_union_j else ref.loc[idx, col] for col in feature_names])
+                        print(z, type(z))
+                        rewards.append(fc(z))
+                    return np.mean(rewards)
+
                 # Update Shapley value of attribute i
                 Φ[j] += ω * (f_S_union_j - f_S)
 
