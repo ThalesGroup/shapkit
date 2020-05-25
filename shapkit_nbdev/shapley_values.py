@@ -31,7 +31,7 @@ def ShapleyValues(x, fc, ref, K=10):
 
     def output_several_ref(coalition, feature_names):
         rewards = []
-        idxs = np.random.choice(ref.index, size=K)
+        idxs = np.random.choice(ref.index, size=K, replace=False)
         for idx in idxs:
             z = np.array([x[col] if col in coalition else ref.loc[idx, col] for col in feature_names])
             rewards.append(fc(z))
@@ -62,18 +62,7 @@ def ShapleyValues(x, fc, ref, K=10):
             features_out_S = set_features - set(S)
             for j in features_out_S:
                 S_union_j = S + [j]
-                try:
-                    f_S_union_j = output(S_union_j, feature_names)
-                except:
-                    rewards = []
-                    idxs = np.random.choice(ref.index, size=K, replace=False)
-                    print(idxs)
-                    for idx in idxs:
-                        z = np.array([x[col] if col in S_union_j else ref.loc[idx, col] for col in feature_names])
-                        print(z, type(z))
-                        rewards.append(fc(z))
-                    return np.mean(rewards)
-
+                f_S_union_j = output(S_union_j, feature_names)
                 # Update Shapley value of attribute i
                 Φ[j] += ω * (f_S_union_j - f_S)
 
