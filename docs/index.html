@@ -148,9 +148,9 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">shapkit_nbdev.shapley_values</span> <span class="k">import</span> <span class="n">ShapleyValues</span>
-<span class="kn">from</span> <span class="nn">shapkit_nbdev.monte_carlo_shapley</span> <span class="k">import</span> <span class="n">MonteCarloShapley</span>
-<span class="kn">from</span> <span class="nn">shapkit_nbdev.sgd_shapley</span> <span class="k">import</span> <span class="n">SGDshapley</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">shapkit.shapley_values</span> <span class="k">import</span> <span class="n">ShapleyValues</span>
+<span class="kn">from</span> <span class="nn">shapkit.monte_carlo_shapley</span> <span class="k">import</span> <span class="n">MonteCarloShapley</span>
+<span class="kn">from</span> <span class="nn">shapkit.sgd_shapley</span> <span class="k">import</span> <span class="n">SGDshapley</span>
 </pre></div>
 
     </div>
@@ -173,7 +173,7 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shap</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shap</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -248,7 +248,7 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
     </div>

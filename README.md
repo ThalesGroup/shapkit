@@ -52,15 +52,15 @@ x = X.iloc[idx_x,:]
 ```
 
 ```python
-from shapkit_nbdev.shapley_values import ShapleyValues
-from shapkit_nbdev.monte_carlo_shapley import MonteCarloShapley
-from shapkit_nbdev.sgd_shapley import SGDshapley
+from shapkit.shapley_values import ShapleyValues
+from shapkit.monte_carlo_shapley import MonteCarloShapley
+from shapkit.sgd_shapley import SGDshapley
 ```
 
 #### Shapley Values
 
 ```python
-true_shap = ShapleyValues(x=x, fc=fc, r=r)
+true_shap = ShapleyValues(x=x, fc=fc, ref=r)
 ```
 
     100%|██████████| 5/5 [00:00<00:00, 296.03it/s]
@@ -85,7 +85,7 @@ true_shap
 #### Monte Carlo
 
 ```python
-mc_shap = MonteCarloShapley(x=x, fc=fc, r=r, n_iter=100, callback=None)
+mc_shap = MonteCarloShapley(x=x, fc=fc, ref=r, n_iter=100, callback=None)
 ```
 
     100%|██████████| 100/100 [00:00<00:00, 5709.10it/s]

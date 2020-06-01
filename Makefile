@@ -1,10 +1,10 @@
 SRC = $(wildcard nbs/*.ipynb)
 
-all: shapkit_nbdev docs
+all: shapkit docs
 
-shapkit_nbdev: $(SRC)
+shapkit: $(SRC)
 	nbdev_build_lib
-	touch shapkit_nbdev
+	touch shapkit
 
 docs_serve: docs
 	cd docs && bundle exec jekyll serve

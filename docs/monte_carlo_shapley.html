@@ -61,6 +61,7 @@ where $\phi_j$ is the attribute contribution of feature indexed $j$.  We loosely
 For any $S\subset\mathcal{M}$, let's define $ z(\mathbf{x^*},\mathbf{r},S)$ such that $z(\mathbf{x^*},\mathbf{r},\emptyset) = \mathbf{r}$, \ $z(\mathbf{x^*},\mathbf{r},\mathcal{M}) = \mathbf{x^*}$ and</p>
 $$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \text{ if } i \in S \text{ and } r_i  \text{ otherwise }$$<p></p>
 <p>As explain in [Merrick,2019], each reference $\textbf{r}$ sets a single-game with $ v(S) = f(z(\mathbf{x^*},\mathbf{r},S)) - f(\mathbf{r}) $, $v(\emptyset) = 0 $ and $v(\mathcal{M}) = f(\mathbf{x^*}) - f(\mathbf{r}) $.</p>
+<p>Furthermore, we can extend the previous result by using several references well chosen. In that case, the final Shapley Values obtained are simply the average of those calculated on each reference independantly. But, in order to accelerate the estimation, we modify the algorithm to take into account this situation.</p>
 
 </div>
 </div>
@@ -75,16 +76,16 @@ $$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \t
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Inputs:</strong> instance $\mathbf{x^*}$ and $\mathbf{r}$, the reward function $v$ and the number of iterations $\text{T}$.</p>
 <p><strong>Result:</strong> the Shapley Values $\boldsymbol{\widehat{\phi}} \in \Re^d$.</p>
-<p>1.&emsp;Initialization: $\boldsymbol{\widehat{\phi}}=  \{0,\dots,0\} \text{ and } \boldsymbol{\widehat{\sigma^2}} = \{0,\dots,0\}$ \;</p>
+<p>1.&emsp;Initialization: $\boldsymbol{\widehat{\phi}}=  \{0,\dots,0\}$ \;</p>
 <p>2.&emsp;For $t=1,\dots,T$:<br>
 &emsp;&emsp;(a).&emsp;Choose the subset resulting of an uniform permutation $O\in\pi(\{1, \dots,d\})$ of the features values \;<br>
-&emsp;&emsp;(b).&emsp; $v^{(1)} = v(\mathbf{r})$, $\mathbf{b} = \mathbf{r}$ \;<br>
-&emsp;&emsp;(c).&emsp; For j in $O$:<br>
+&emsp;&emsp;(b).&emsp;If several references are given, select at random one reference $\mathbf{r}$ \;<br>
+&emsp;&emsp;(c).&emsp; $v^{(1)} = v(\mathbf{r})$, $\mathbf{b} = \mathbf{r}$ \;<br>
+&emsp;&emsp;(d).&emsp; For j in $O$:<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\mathbf{b} = x_i^* \text{ if } i = j \text{ and } b_i \text{ otherwise}$, with $i\in\{1, \dots, d\}$ \;<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$ v^{(2)} = v(\mathbf{b})$ \;<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\phi_j =  v^{(2)} - v^{(1)}$ \;<br>
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Update online $\widehat{\phi}$ and $\widehat{\sigma^2}$ (if $t &gt; 1$):<br>
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\widehat{\sigma_j^2} = \dfrac{t-2}{t-1} \widehat{\sigma_j^2}+ (\phi_j - \widehat{\phi_j})^{2/t}$ \;<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Update online $\widehat{\phi}$ (if $t &gt; 1$):<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$\widehat{\phi_j} = \dfrac{t-1}{t} \widehat{\phi_j} + \dfrac{1}{t} \phi_j$ \;<br>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;$v^{(1)} = v^{(2)}$ \;<br></p>
 
@@ -113,7 +114,7 @@ $$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \t
 </li>
 <li><p><code>fc</code>: python function. The reward function $v$,</p>
 </li>
-<li><p><code>r</code>: pandas Series. The reference $\mathbf{r}$. The Shapley values (attribute importance) is a contrastive explanation according to this individual,</p>
+<li><p><code>ref</code>: pandas Series or pandas DataFrame. Either one or several references $\mathbf{r}$. The Shapley values (attribute importance) is a contrastive explanation according to these individual(s),</p>
 </li>
 <li><p><code>n_iter</code>: integer. The number of iteration,</p>
 </li>
@@ -146,7 +147,7 @@ $$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \t
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="MonteCarloShapley" class="doc_header"><code>MonteCarloShapley</code><a href="https://github.com/simon.grah/shapkit_nbdev/tree/master/shapkit_nbdev/monte_carlo_shapley.py#L11" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MonteCarloShapley</code>(<strong><code>x</code></strong>, <strong><code>fc</code></strong>, <strong><code>r</code></strong>, <strong><code>n_iter</code></strong>, <strong><code>callback</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="MonteCarloShapley" class="doc_header"><code>MonteCarloShapley</code><a href="https://github.com/simon.grah/shapkit/tree/master/shapkit/monte_carlo_shapley.py#L11" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MonteCarloShapley</code>(<strong><code>x</code></strong>, <strong><code>fc</code></strong>, <strong><code>ref</code></strong>, <strong><code>n_iter</code></strong>, <strong><code>callback</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Estimate the Shapley Values using an optimized Monte Carlo version.</p>
 
@@ -222,6 +223,12 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 </div>
     {% endraw %}
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Pick-an-individual-x-to-explain">Pick an individual x to explain<a class="anchor-link" href="#Pick-an-individual-x-to-explain"> </a></h3>
+</div>
+</div>
+</div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -229,12 +236,77 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">idx_r</span><span class="p">,</span> <span class="n">idx_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_r</span><span class="p">,:]</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx_x</span><span class="p">,:]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],:]</span>
+<span class="n">x</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>x1    0.548871
+x2   -0.266168
+x3   -0.596560
+x4    0.270937
+x5    1.425317
+Name: 33, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Single-reference">Single reference<a class="anchor-link" href="#Single-reference"> </a></h3>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">reference</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],:]</span>
+<span class="n">reference</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>x1   -0.674976
+x2    1.384805
+x3   -0.488993
+x4    1.144662
+x5   -2.659241
+Name: 37, dtype: float64</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -248,7 +320,7 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -261,7 +333,7 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 100/100 [00:00&lt;00:00, 5134.42it/s]
+<pre>100%|██████████| 100/100 [00:00&lt;00:00, 6408.21it/s]
 </pre>
 </div>
 </div>
@@ -294,11 +366,227 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>x1    0.373885
-x2    0.423093
-x3   -0.001848
-x4    0.005464
-x5    0.012445
+<pre>x1    0.018301
+x2    0.187623
+x3   -0.014598
+x4    0.150991
+x5    0.395141
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Several-references">Several references<a class="anchor-link" href="#Several-references"> </a></h3>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">references</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),:]</span>
+<span class="n">references</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x1</th>
+      <th>x2</th>
+      <th>x3</th>
+      <th>x4</th>
+      <th>x5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>86</th>
+      <td>0.216588</td>
+      <td>0.909788</td>
+      <td>-0.147878</td>
+      <td>0.255744</td>
+      <td>1.624715</td>
+    </tr>
+    <tr>
+      <th>72</th>
+      <td>-1.319072</td>
+      <td>0.272220</td>
+      <td>-0.170397</td>
+      <td>-0.103746</td>
+      <td>1.322788</td>
+    </tr>
+    <tr>
+      <th>75</th>
+      <td>-1.798071</td>
+      <td>0.257330</td>
+      <td>0.126133</td>
+      <td>0.204417</td>
+      <td>-0.519340</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>0.417824</td>
+      <td>0.980084</td>
+      <td>-0.659535</td>
+      <td>-0.887066</td>
+      <td>0.480084</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>-0.997690</td>
+      <td>-0.258772</td>
+      <td>-0.178554</td>
+      <td>-0.491387</td>
+      <td>-0.245780</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-1.074992</td>
+      <td>-0.540233</td>
+      <td>-0.767643</td>
+      <td>0.241852</td>
+      <td>1.862010</td>
+    </tr>
+    <tr>
+      <th>88</th>
+      <td>-1.264811</td>
+      <td>-0.823336</td>
+      <td>-1.534118</td>
+      <td>0.287622</td>
+      <td>1.137066</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>-0.195796</td>
+      <td>0.971282</td>
+      <td>-0.007380</td>
+      <td>2.187777</td>
+      <td>0.382476</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>1.829212</td>
+      <td>0.383421</td>
+      <td>-0.603274</td>
+      <td>-0.546020</td>
+      <td>-0.157399</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>-0.344600</td>
+      <td>-0.451699</td>
+      <td>-1.304172</td>
+      <td>-0.173159</td>
+      <td>0.387426</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shaps</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">references</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 1000/1000 [00:00&lt;00:00, 4558.43it/s]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shaps</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>x1    0.315697
+x2    0.114605
+x3    0.043859
+x4    0.143988
+x5   -0.448145
 dtype: float64</pre>
 </div>
 
@@ -323,9 +611,12 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r_pred</span> <span class="o">=</span> <span class="n">fc</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-<span class="n">x_pred</span> <span class="o">=</span> <span class="n">fc</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-<span class="n">v_M</span> <span class="o">=</span> <span class="n">x_pred</span> <span class="o">-</span> <span class="n">r_pred</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x_pred</span> <span class="o">=</span> <span class="n">fc</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">reference_pred</span> <span class="o">=</span> <span class="n">fc</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">fcs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">references</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="n">fcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fc</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+<span class="n">references_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">fcs</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -342,7 +633,7 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shap</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">v_M</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-10</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shap</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_pred</span> <span class="o">-</span> <span class="n">reference_pred</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1e-10</span> 
 </pre></div>
 
     </div>
@@ -359,7 +650,24 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shap</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shaps</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_pred</span> <span class="o">-</span> <span class="n">references_pred</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1e-1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shap</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shap</span> <span class="o">-</span> <span class="n">true_shap</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.1</span>
 </pre></div>
 
@@ -373,7 +681,39 @@ dtype: float64</pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 5/5 [00:00&lt;00:00, 447.71it/s]
+<pre>100%|██████████| 5/5 [00:00&lt;00:00, 205.33it/s]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shaps</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">references</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shaps</span> <span class="o">-</span> <span class="n">true_shaps</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 5/5 [00:00&lt;00:00, 33.64it/s]
 </pre>
 </div>
 </div>

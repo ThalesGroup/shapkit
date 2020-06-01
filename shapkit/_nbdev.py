@@ -15,8 +15,8 @@ modules = ["inspector.py",
            "sgd_shapley.py",
            "shapley_values.py"]
 
-doc_url = "https://simon.grah.github.io/shapkit_nbdev/"
+doc_url = "https://simon.grah.github.io/shapkit/"
 
-git_url = "https://github.com/simon.grah/shapkit_nbdev/tree/master/"
+git_url = "https://github.com/simon.grah/shapkit/tree/master/"
 
 def custom_doc_links(name): return None

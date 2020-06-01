@@ -10,7 +10,7 @@ from math import factorial
 from tqdm import tqdm
 
 # Cell
-def ShapleyValues(x, fc, ref, K=10):
+def ShapleyValues(x, fc, ref):
     """
     Calculate the exact Shapley Values for an individual x
     in a game based on a reference r and the reward function fc.
@@ -31,7 +31,7 @@ def ShapleyValues(x, fc, ref, K=10):
 
     def output_several_ref(coalition, feature_names):
         rewards = []
-        idxs = np.random.choice(ref.index, size=K, replace=False)
+        idxs = np.random.choice(ref.index, size=len(ref), replace=False)
         for idx in idxs:
             z = np.array([x[col] if col in coalition else ref.loc[idx, col] for col in feature_names])
             rewards.append(fc(z))

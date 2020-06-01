@@ -1,7 +1,7 @@
-repository: simon.grah/shapkit_nbdev
+repository: simon.grah/shapkit
 output: web
-topnav_title: shapkit_nbdev
-site_title: shapkit_nbdev
+topnav_title: shapkit
+site_title: shapkit
 company_name: THALES
 description: A description of your project
 # Set to false to disable KaTeX math
@@ -61,4 +61,4 @@ sidebars:
 permalink: pretty
 
 theme: jekyll-theme-cayman
-baseurl: /shapkit_nbdev/
+baseurl: /shapkit/

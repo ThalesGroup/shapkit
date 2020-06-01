@@ -11,7 +11,7 @@ entries:
       url: /
     - output: web,pdf
       title: Title
-      url: /inspector
+      url: /plots
     - output: web,pdf
       title: Monte Carlo Shapley
       url: /monte_carlo_shapley
@@ -22,6 +22,6 @@ entries:
       title: Shapley Value
       url: /shapley_values
     output: web
-    title: shapkit_nbdev
+    title: shapkit
   output: web
   title: Sidebar

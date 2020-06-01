@@ -1,7 +1,7 @@
 {
-  "shapkit_nbdev": {
+  "shapkit": {
     "Overview": "/",
-    "Title": "/inspector",
+    "Title": "/plots",
     "Monte Carlo Shapley": "/monte_carlo_shapley",
     "Projected Stochastic Gradient Shapley": "/sgd_shapley",
     "Shapley Value": "/shapley_values"
