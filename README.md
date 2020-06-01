@@ -1,134 +1,93 @@
 # Shapkit
-> Summary description here.
+> Interpret machine learning predictions by using agnostic local feature importance based on Shapley Values. 
 
 
-This file will become your README and also the index of your documentation.
+## Overview
+
+### Objective
+
+Machine Learning is enjoying an increasing success in many applications: medical, marketing, defense, cyber security, transport. It is becoming a key tool in critical systems. However, models are often very complex and highly non-linear. This is problematic, especially for critical systems, because end-users need to fully understand decisions of an algorithm (e.g. why an alert has been triggered, why a person has a high probability of cancer recurrence,. . . ). One solution is to offer an interpretation for each individual prediction based on attribute relevance. Shapley Values allow to distribute fairly contributions for each attribute in order to understand the difference between a predicted value for an observation and a base value (e.g. the average prediction of a reference population).
+
+The method used is:
+* **agnostic**: no particular information on the model is needed, it works with black box algorithms. We only define an reward funtion (e.g. the model output).
+* **local**: the explanation is computed at instance level. Interpretation associated to a given prediction.
+* More suitable for tabular data with meaningful features.
+
+### A concrete use case: COMPAS
+
+> *COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) is a popular commercial algorithm used by judges and parole officers for scoring criminal defendant’s likelihood of reoffending (recidivism)*
+
+Assume that we have trained a machine learning model in order to predict probability of recividism of a given individual. The algorithm is quite effective but it only returns a probability score without any details on how it has made its choice.
+What we would like is to get an idea of each individual attributes (characteristics) contributes to explain the difference between the individual prediction and the mean prediction made on other instances called the references. These references are defined by the user (e.g. for classification, interesting references are selected into other predicted classes).
+
+<img alt="Exporting from nbdev" width="700" caption="On this example, the fact that this person has commited 6 priors crime, is African-American and 27 years old, his legal status is Post Sentence, are mainly explained why the model has predicted such probability score. The contributions could also be negative, e.g. his probation custody status influences the model towards a low probability of recividism." src="nbs/images/shap_readme_illustration.png">
+
+This picture displays the interpretation associated to a given prediction for individual x. The estimated probability of recidivism is about 0,75 (deep blue arrow). The attributes (or characteristics) of that individual are showed in the y axis. Based on a set of chosen references (here the references are predicted as non recidivist by the model), we compute contributions (Shapley Values) of each attribute related to their influence on the model output. 
+Those contributions have some interesting properties. Indeed, the sum of all contributions equals the difference between the output of the individual x (0,75) and the mean output of references (0,13).
+
+On this example, the fact that this person has commited 6 priors crime, is African-American and 27 years old, his legal status is Post Sentence, are mainly explained why the model has predicted such probability score. The contributions could also be negative, e.g. his probation custody status influences the model towards a low probability of recividism.
 
 ## Install
 
-`pip install your_project_name`
+```
+pip install shapkit
+```
 
 ## How to use
 
-Fill me in please! Don't forget code examples:
-
-### Regression example
-
-We use a simulated dataset from the book _Elements of Statistical Learning_ ([hastie,2009], the Radial example). $X_1, \dots , X_{d}$ are standard independent Gaussian. The model is determined by:
-
-{% raw %}
-$$ Y = \prod_{j=1}^{d} \rho(X_j), $$
-{% endraw %}
-
-where $\rho\text{: } t \rightarrow \sqrt{(0.5 \pi)} \exp(- t^2 /2)$. The regression function $f_{regr}$ is deterministic and simply defined by $f_r\text{: } \textbf{x} \rightarrow \prod_{j=1}^{d} \phi(x_j)$. For a reference $\mathbf{r^*}$ and a target $\mathbf{x^*}$, we define the reward function $v_r^{\mathbf{r^*}, \mathbf{x^*}}$ such as for each coalition $S$, $v_r^{\mathbf{r^*}, \mathbf{x^*}}(S) = f_{regr}(\mathbf{z}(\mathbf{x^*}, \mathbf{r^*}, S)) - f_{regr}(\mathbf{r^*}).$
-
- [hastie,2009] _The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition_. Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome. Springer Series in Statistics, 2009.
-	
-
+The method is a post-hoc explanation, so you do not have to change your routine. Firstly, train your model:
 ```python
-d, n_samples = 5, 100
-mu = np.zeros(d)
-Sigma = np.zeros((d,d))
-np.fill_diagonal(Sigma, [1] * d)
-X = np.random.multivariate_normal(mean=mu, cov=Sigma, size=n_samples)
-X = pd.DataFrame(X, columns=['x'+str(i) for i in range(1, d+1)])
-def fc(x):
-    phi_x = np.sqrt(.5 * np.pi) * np.exp(-0.5 * x ** 2)
-    return np.prod(phi_x)
-y = np.zeros(len(X))
-for i in range(len(X)):
-    y[i] = fc(X.values[i])
-n = 2**d - 2
-print("dimension = {0} ; nb of coalitions = {1}".format(str(d), str(n)))
+model.fit(X_train, y_train)
 ```
 
-    dimension = 5 ; nb of coalitions = 30
-
-
+Then, define your reward function `fc` (e.g. simply set by your model output):
 ```python
-idx_r, idx_x = np.random.choice(np.arange(len(X)), size=2, replace=False)
-r = X.iloc[idx_r,:]
-x = X.iloc[idx_x,:]
+fc = lambda x: model.predict_proba(x)
 ```
 
+Select an instance `x` for which you need more interpretation. Pick also one or several `reference(s)` (instance or dataset of individuals). 
+If the number of features is not too high (said lower than 10), you can compute the exact Shapley Values.
 ```python
-from shapkit.shapley_values import ShapleyValues
-from shapkit.monte_carlo_shapley import MonteCarloShapley
-from shapkit.sgd_shapley import SGDshapley
+true_shap = ShapleyValues(x=x, fc=fc, ref=reference)
 ```
 
-#### Shapley Values
+If the dimension exceeds about 15, then you may need approximation algorithms to estimate the Shapley Values. 
+
+* Monte Carlo algorithm:
 
 ```python
-true_shap = ShapleyValues(x=x, fc=fc, ref=r)
-```
-
-    100%|██████████| 5/5 [00:00<00:00, 296.03it/s]
-
-
-```python
-true_shap
+mc_shap = MonteCarloShapley(x=x, fc=fc, ref=reference, n_iter=1000)
 ```
 
 
-
-
-    x1    0.405936
-    x2   -0.206316
-    x3    0.467009
-    x4    0.068731
-    x5    0.006309
-    dtype: float64
-
-
-
-#### Monte Carlo
-
-```python
-mc_shap = MonteCarloShapley(x=x, fc=fc, ref=r, n_iter=100, callback=None)
-```
-
-    100%|██████████| 100/100 [00:00<00:00, 5709.10it/s]
-
-
-```python
-mc_shap
-```
-
-
-
-
-    x1    0.429189
-    x2   -0.207783
-    x3    0.453132
-    x4    0.060524
-    x5    0.006608
-    dtype: float64
-
-
-
-#### Projected Stochastic Gradient Shapley 
+* Projected Stochastic Gradient Descent algorithm:
 
 ```python
 sgd_est = SGDshapley(d, C=y.max())
-sgd_shap = sgd_est.sgd(x=x, fc=fc, r=r, n_iter=1000, step=.1, step_type="sqrt")
+sgd_shap = sgd_est.sgd(x=x, fc=fc, r=reference, n_iter=5000, step=.1, step_type="sqrt")
 ```
 
-    100%|██████████| 1000/1000 [00:00<00:00, 7572.20it/s]
+## Code and description
 
+This library is based on [nbdev](http://nbdev.fast.ai/).
+> nbdev is a library that allows you to fully develop a library in Jupyter Notebooks, putting all your code, tests and documentation in one place. That is:you now have a true literate programming environment, as envisioned by Donald Knuth back in 1983!
+Codes, descriptions, small examples and tests are all put together in jupyter notebooks in the folder `nbs`.
 
-```python
-sgd_shap
+Usefull commands from `nbdev`:
+
+* Build your lib by converting all notebooks in folder `nbs` to .py files
+```
+ nbdev_build_lib
 ```
 
 
+* Run all tests in parallel
+```
+nbdev_test_nbs
+```
 
 
-    x1    0.367332
-    x2   -0.173752
-    x3    0.449700
-    x4    0.076825
-    x5    0.021565
-    dtype: float64
-
-
+* Build docs
+```
+nbdev_build_docs
+```

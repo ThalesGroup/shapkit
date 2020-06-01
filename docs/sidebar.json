@@ -1,8 +1,9 @@
 {
   "shapkit": {
     "Overview": "/",
-    "Title": "/plots",
+    "Callback": "/inspector",
     "Monte Carlo Shapley": "/monte_carlo_shapley",
+    "Plots": "/plots",
     "Projected Stochastic Gradient Shapley": "/sgd_shapley",
     "Shapley Value": "/shapley_values"
   }

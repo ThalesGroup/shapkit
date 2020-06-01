@@ -10,11 +10,14 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Title
-      url: /plots
+      title: Callback
+      url: /inspector
     - output: web,pdf
       title: Monte Carlo Shapley
       url: /monte_carlo_shapley
+    - output: web,pdf
+      title: Plots
+      url: /plots
     - output: web,pdf
       title: Projected Stochastic Gradient Shapley
       url: /sgd_shapley
