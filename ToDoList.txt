@@ -2,4 +2,3 @@ ToDoList:
 * Update de SGD Shap
 * Amélioration des tutorials
 * dependencies, conda env 
-* Add copyrights au début de chaque fichier
