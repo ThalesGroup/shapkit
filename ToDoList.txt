@@ -1,5 +1,5 @@
 ToDoList:
-* Index (README) à updater: description haut niveau de la lib, illustration plot, références, définition du reward, utilisations des functions, paragraphe sur nbdev.
 * Update de SGD Shap
 * Amélioration des tutorials
 * dependencies, conda env 
+* Add copyrights au début de chaque fichier
