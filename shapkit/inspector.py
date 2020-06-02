@@ -3,8 +3,12 @@
 __all__ = ['inspector']
 
 # Cell
-# Copyright (c) 2020 Simon Grah <simon.grah@thalesgroup.com>
-#                    Vincent Thouvenot <vincent.thouvenot@thalesgroup.com>
+# Author: Simon Grah <simon.grah@thalesgroup.com>
+#         Vincent Thouvenot <vincent.thouvenot@thalesgroup.com>
+
+# MIT License
+
+# Copyright (c) 2020 Thales Six GTS France
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

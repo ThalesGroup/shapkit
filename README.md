@@ -22,10 +22,10 @@ We would like to know how each attribute (characteristic) influences the model o
 
 <img alt="Exporting from nbdev" width="700" caption="On this example, the fact that this person has commited 6 priors crime, is African-American and 27 years old, his legal status is Post Sentence, are mainly explained why the model has predicted such probability score. The contributions could also be negative, e.g. his probation custody status influences the model towards a low probability of recividism." src="nbs/images/shap_readme_illustration.png">
 
-This picture displays the kind of interpretation associated to a given prediction for individual x. The estimated probability of recidivism is about 0,75 (deep blue arrow). The attributes (or characteristics) of that individual are showed in the y axis. Based on a set of chosen references (here the references are predicted as non recidivist by the model), we compute contributions (Shapley Values) of each attribute related to their influence on the model output. 
+This picture displays the kind of interpretation associated to a given prediction for individual x. The estimated probability of recidivism is about 0,75 (deep blue arrow). The individual attributes (or characteristics) are showed in the y axis. Based on a set of chosen references (here the references are predicted as non recidivist by the model), we compute contributions (Shapley Values) of each attribute related to their influence on the model output. 
 Those contributions have some interesting properties. Indeed, the sum of all contributions equals the difference between the output of the individual x (0,75) and the mean output of references (0,13).
 
-On this example, the fact that this person has commited 6 priors crime, is African-American and 27 years old, his legal status is Post Sentence, are mainly explained why the model has predicted such probability score. The contributions could also be negative, e.g. his probation custody status influences the model towards a low probability of recividism.
+On this example, the fact that this person has commited 6 priors crimes, is African-American and 27 years old, his legal status is Post Sentence, mainly explain why the model has predicted such probability score. The contributions could also be negatives, e.g. his probation custody status influences the model towards a low probability of recividism.
 
 ## Install
 
@@ -35,12 +35,12 @@ pip install shapkit
 
 ## Dependencies
 
-* [python3](https://www.python.org/downloads/) 
-* [numpy](https://numpy.org/)
-* [pandas](https://pandas.pydata.org/)
-* [matplotlib](https://matplotlib.org/)
-* [seaborn](https://seaborn.pydata.org/)
-* [tqdm](https://github.com/tqdm/tqdm) [optional]
+* [python3](https://www.python.org/downloads/) (>= 3.6)
+* [numpy](https://numpy.org/) (>= 1.17.2)
+* [pandas](https://pandas.pydata.org/) (>= 0.25.3)
+* [matplotlib](https://matplotlib.org/) (>= 2.2.3)
+* [seaborn](https://seaborn.pydata.org/) (>= 0.9.0)
+* [tqdm](https://github.com/tqdm/tqdm) [optional] (>= 4.26.0)
 
 ## How to use
 
@@ -102,6 +102,10 @@ nbdev_test_nbs
 nbdev_build_docs
 ```
 
+## Tutorial
+
+Notebook demos are availables in `tutorials` folder.
+
 ## License
 
-Mypy is licensed under the terms of the MIT License (see the file LICENSE).
+Shapkit is licensed under the terms of the MIT License (see the file LICENSE).
