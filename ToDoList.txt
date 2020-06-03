@@ -1,4 +1,3 @@
 ToDoList:
 * Update de SGD Shap
 * Amélioration des tutorials
-* dependencies, conda env 
