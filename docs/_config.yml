@@ -1,9 +1,9 @@
-repository: simon.grah/shapkit
+repository: sgrah-oss/shapkit
 output: web
 topnav_title: shapkit
 site_title: shapkit
 company_name: THALES
-description: A description of your project
+description: Interpret machine learning predictions using agnostic local feature importance based on Shapley Values.
 # Set to false to disable KaTeX math
 use_math: true
 # Add Google analytics id if you have one and want to use it here
