@@ -140,4 +140,4 @@ checklink/cookies.txt
 .gitconfig
 
 # ignore Catboost folder
-catboost_info
+catboost_info/

@@ -1,3 +1,0 @@
-ToDoList:
-* Update de SGD Shap
-* Amélioration des tutorials
