@@ -37,7 +37,7 @@ import seaborn as sns
 sns.set_style("whitegrid")
 
 # Cell
-def plot_shapley(x, fc, ref, shapley_values, n_attributes):
+def plot_shapley(x, fc, ref, shapley_values, n_attributes, savefig=False, filename="fig.png", fig_format="png"):
 
     # Get output for x and ref
     pred_x = fc(x.values)
@@ -92,11 +92,11 @@ def plot_shapley(x, fc, ref, shapley_values, n_attributes):
     width_ = np.abs(pred_x - pred_ref) / 100
     arrow = mpatches.FancyArrow(0, 0, 0, 1, width=width_, length_includes_head=True, head_width=width_,
                                 head_length=0.2, shape='full', overhang=0, head_starts_at_zero=False,
-                                color="forestgreen", label="reference output = "+str(round(pred_ref,2)))
+                                color="forestgreen", label="reference score = "+str(round(pred_ref,2)))
     fig.get_axes()[0].add_patch(arrow)
     arrow = mpatches.FancyArrow(pred_x - pred_ref, idx+1, 0, 1, width=width_, length_includes_head=True, head_width=width_,
                                 head_length=0.2, shape='full', overhang=0, head_starts_at_zero=False,
-                                color="midnightblue", label="x output = "+str(round(pred_x,2)))
+                                color="midnightblue", label="x score = "+str(round(pred_x,2)))
     fig.get_axes()[0].add_patch(arrow)
 
     # Rename xticks labels because zero is the reference reward
@@ -104,6 +104,9 @@ def plot_shapley(x, fc, ref, shapley_values, n_attributes):
     fig.get_axes()[0].set_xticklabels(xticks_label)
 
     plt.legend(loc='best')
-    plt.xlabel("Output")
+    plt.xlabel("Score")
     plt.ylabel("x attributes")
+    if savefig == True:
+        plt.savefig(filename, format=fig_format, bbox_inches='tight')
+        print("plot saved with path {0} and {1} format".format(filename, fig_format))
     plt.show()
