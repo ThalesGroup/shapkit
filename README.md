@@ -20,12 +20,12 @@ The method used is:
 Assume that we have trained a machine learning model to predict the probability of recividism of a given individual. The algorithm is quite effective but it only returns a probability score without any details on how it has made its choice.
 We would like to know how each attribute (characteristic) influences the model output. Furthermore, contributions explain the difference between the individual prediction and the mean prediction for all references. These references are defined by the user (e.g. for classification, interesting references are selected into other predicted classes).
 
-<img alt="Exporting from nbdev" width="700" caption="On this example, the fact that this person has commited 6 priors crime, is African-American and 27 years old, his legal status is Post Sentence, are mainly explained why the model has predicted such probability score. The contributions could also be negative, e.g. his probation custody status influences the model towards a low probability of recividism." src="nbs/images/shap_readme_illustration.png">
+<img alt="Exporting from nbdev" width="1000" caption="On this example, we can analyze that the age (21 years old) and the ethnicity of the individual x increase respectively by 46% and 15% the estimated probability of recidivism. In the meantime, the fact that he has never commited any crimes decreases the probability by 9%." src="nbs/images/compas_plot.png">
 
-This picture displays the kind of interpretation associated to a given prediction for individual x. The estimated probability of recidivism is about 0,75 (deep blue arrow). The individual attributes (or characteristics) are showed in the y axis. Based on a set of chosen references (here the references are predicted as non recidivist by the model), we compute contributions (Shapley Values) of each attribute related to their influence on the model output. 
-Those contributions have some interesting properties. Indeed, the sum of all contributions equals the difference between the output of the individual x (0,75) and the mean output of references (0,13).
-
-On this example, the fact that this person has commited 6 priors crimes, is African-American and 27 years old, his legal status is Post Sentence, mainly explain why the model has predicted such probability score. The contributions could also be negatives, e.g. his probation custody status influences the model towards a low probability of recividism.
+This picture displays the kind of interpretation associated to a given prediction for individual x. We want to understand the model decision associated to an individual x. As an example, here the individual  has a probability of 70% to reoffend. (the blue tick at top right).
+Attribute importance are computed with respect to one or several references. On this example, we chose only non predicted recividists as good elements of comparison. The mean probability for that group of references is about 14% (green tick at the bottom left).
+Finally, the gap between our individual prediction and the mean reference prediction is splitted by the attribute importance. The sum of all contributions equals that difference. 
+Now, we can analyze that the age (21 years old) and the ethnicity of the individual x increase respectively by 46% and 15% the estimated probability of recidivism. In the meantime, the fact that he has never commited any crimes decreases the probability by 9%.
 
 ## Install
 
@@ -73,12 +73,12 @@ mc_shap = MonteCarloShapley(x=x, fc=fc, ref=reference, n_iter=1000)
 
 ```python
 sgd_est = SGDshapley(d, C=y.max())
-sgd_shap = sgd_est.sgd(x=x, fc=fc, r=reference, n_iter=5000, step=.1, step_type="sqrt")
+sgd_shap = sgd_est.sgd(x=x, fc=fc, ref=reference, n_iter=5000, step=.1, step_type="sqrt")
 ```
 
 ## Code and description
 
-This library is based on [nbdev](http://nbdev.fast.ai/).
+This library is based on [nbdev](http://nbdev.fast.ai/). If you want to modify the lib or run tests, you will have to install it.
 > nbdev is a library that allows you to fully develop a library in Jupyter Notebooks, putting all your code, tests and documentation in one place. That is:you now have a true literate programming environment, as envisioned by Donald Knuth back in 1983!
 
 Codes, descriptions, small examples and tests are all put together in jupyter notebooks in the folder `nbs`.
@@ -109,3 +109,7 @@ Notebook demos are availables in `tutorials` folder.
 ## License
 
 Shapkit is licensed under the terms of the MIT License (see the file LICENSE).
+
+## Main reference
+
+*A Projected SGD algorithm for estimating Shapley Value applied in attribute importance*, S. Grah, V. Thouvenot, CD-MAKE 2020

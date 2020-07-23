@@ -32,14 +32,12 @@ __all__ = ['inspector']
 import numpy as np
 
 # Cell
-def inspector(x_min, precision=0, verbose=False):
+def inspector(x_min, verbose=False):
     """A closure called to update metrics after each iteration."""
-    bool = (x_min.abs() >= precision).values
-    # print(bool, (x_min >= precision), x_min[bool])
     errors = []
     it = [0] # This is a hack to be able to modify 'it' inside the closure
     def inspector_cl(xk):
-        err = np.linalg.norm(xk[bool] - x_min[bool], 2)
+        err = np.linalg.norm(xk - x_min, 2)
         errors.append(err)
         if verbose == True:
             if it[0] == 0:

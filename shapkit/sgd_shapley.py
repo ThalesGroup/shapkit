@@ -134,7 +134,7 @@ class SGDshapley():
                 qk = yk + qk - xk
         return xk
 
-    def sgd(self, x, fc, r, n_iter=100, step=.1, step_type="sqrt",
+    def sgd(self, x, fc, ref, n_iter=100, step=.1, step_type="sqrt",
             callback=None, Φ_0=False):
         """
         Stochastic gradient descent algorithm
@@ -144,7 +144,7 @@ class SGDshapley():
 
         # Get general information
         feature_names = list(x.index)
-        f_x, f_r = fc(x.values), fc(r.values)
+        f_x, f_r = fc(x.values), fc(ref.values)
         v_M = f_x - f_r
 
         d = self.d
@@ -176,7 +176,7 @@ class SGDshapley():
             x_i = np.zeros(d)
             x_i[indexes] = 1
             # Compute y_i
-            z_S = np.array([x.values[j] if x_i[j] == 1 else r.values[j] for j in range(d)])
+            z_S = np.array([x.values[j] if x_i[j] == 1 else ref.values[j] for j in range(d)])
             f_S = fc(z_S)
             y_i = f_S - f_r
             # get weight ω_i

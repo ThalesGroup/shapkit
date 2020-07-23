@@ -65,7 +65,6 @@ def plot_shapley(x, fc, ref, shapley_values, n_attributes):
     plt.ylim(ymin=0, ymax=len(attributes) + 1)
 
     # Cumulative horizontal arrows for Shapley values ordered by absolute values
-#     s_plot_sorted = s_plot.sort_values(ascending=False)
     attribute_order = s_plot.abs().sort_values(ascending=False).index
     s_plot_sorted = s_plot[attribute_order]
     epsilon = 1e-5 # avoid arrows with width=0.
