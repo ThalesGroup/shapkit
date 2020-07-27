@@ -1,5 +1,5 @@
 # Shapkit
-> Interpret machine learning predictions using agnostic local feature importance based on Shapley Values. 
+> Interpret machine learning predictions using agnostic local feature importance based on Shapley Values. Documentation: https://thalesgroup.github.io/shapkit/
 
 
 ## Overview
