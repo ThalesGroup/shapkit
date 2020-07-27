@@ -2,7 +2,7 @@ topnav:
 - title: Topnav
   items:
     - title: GitHub
-      external_url: https://github.com/simon.grah/shapkit_nbdev
+      external_url: https://github.com/ThalesGroup/shapkit
 
 #Topnav dropdowns
 topnav_dropdowns:
