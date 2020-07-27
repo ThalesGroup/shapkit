@@ -42,6 +42,10 @@ pip install shapkit
 * [seaborn](https://seaborn.pydata.org/) (>= 0.9.0)
 * [tqdm](https://github.com/tqdm/tqdm) [optional] (>= 4.26.0)
 
+```
+pip install -r requirements.txt
+```
+
 ## How to use
 
 The method is a post-hoc explanation, so you do not have to change your routine. Firstly, train your model:
