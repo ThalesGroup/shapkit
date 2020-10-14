@@ -72,6 +72,10 @@ If the dimension exceeds about 15, then you may need approximation algorithms to
 mc_shap = MonteCarloShapley(x=x, fc=fc, ref=reference, n_iter=1000)
 ```
 
+If your reward function `fc` can handle data set of inputs, the batch version of Monte Carlo algorithm is more efficient as it calls `fc` only once:
+```python
+mc_shap_batch = MonteCarloShapleyBatch(x=x, fc=fc, ref=reference, n_iter=1000)
+```
 
 * Projected Stochastic Gradient Descent algorithm:
 

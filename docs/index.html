@@ -2,11 +2,13 @@
 
 title: Shapkit
 
+
 keywords: fastai
 sidebar: home_sidebar
 
 summary: "Interpret machine learning predictions using agnostic local feature importance based on Shapley Values. Documentation: https://thalesgroup.github.io/shapkit/"
 description: "Interpret machine learning predictions using agnostic local feature importance based on Shapley Values. Documentation: https://thalesgroup.github.io/shapkit/"
+nb_path: "nbs/index.ipynb"
 ---
 <!--
 
@@ -120,6 +122,9 @@ If the number of features is not too high (said lower than 10), you can compute 
 <li>Monte Carlo algorithm:</li>
 </ul>
 <div class="highlight"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+<p>If your reward function <code>fc</code> can handle data set of inputs, the batch version of Monte Carlo algorithm is more efficient as it calls <code>fc</code> only once:</p>
+<div class="highlight"><pre><span></span><span class="n">mc_shap_batch</span> <span class="o">=</span> <span class="n">MonteCarloShapleyBatch</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 </pre></div>
 <ul>
 <li>Projected Stochastic Gradient Descent algorithm:</li>

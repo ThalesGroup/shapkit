@@ -11,19 +11,19 @@ entries:
       url: /
     - output: web,pdf
       title: Callback
-      url: /inspector
+      url: inspector.html
     - output: web,pdf
       title: Monte Carlo Shapley
-      url: /monte_carlo_shapley
+      url: monte_carlo_shapley.html
     - output: web,pdf
       title: Plots
-      url: /plots
+      url: plots.html
     - output: web,pdf
       title: Projected Stochastic Gradient Shapley
-      url: /sgd_shapley
+      url: sgd_shapley.html
     - output: web,pdf
       title: Shapley Value
-      url: /shapley_values
+      url: shapley_values.html
     output: web
     title: shapkit
   output: web

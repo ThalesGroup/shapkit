@@ -1,10 +1,10 @@
 {
   "shapkit": {
     "Overview": "/",
-    "Callback": "/inspector",
-    "Monte Carlo Shapley": "/monte_carlo_shapley",
-    "Plots": "/plots",
-    "Projected Stochastic Gradient Shapley": "/sgd_shapley",
-    "Shapley Value": "/shapley_values"
+    "Callback": "inspector.html",
+    "Monte Carlo Shapley": "monte_carlo_shapley.html",
+    "Plots": "plots.html",
+    "Projected Stochastic Gradient Shapley": "sgd_shapley.html",
+    "Shapley Value": "shapley_values.html"
   }
 }

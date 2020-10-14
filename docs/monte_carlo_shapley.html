@@ -2,11 +2,13 @@
 
 title: Monte Carlo Shapley
 
+
 keywords: fastai
 sidebar: home_sidebar
 
 summary: "Estimate the Shapley Values using an optimized Monte Carlo version."
 description: "Estimate the Shapley Values using an optimized Monte Carlo version."
+nb_path: "nbs/monte_carlo_shapley.ipynb"
 ---
 <!--
 
@@ -140,13 +142,6 @@ $$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \t
     
 <div class="cell border-box-sizing code_cell rendered">
 
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-
 <div class="output_wrapper">
 <div class="output">
 
@@ -164,6 +159,45 @@ $$ z(\mathbf{x^*},\mathbf{r},S) = (z_1,\dots, z_d) \text{ with } z_i =  x_i^* \t
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="MonteCarloShapleyBatch" class="doc_header"><code>MonteCarloShapleyBatch</code><a href="https://github.com/ThalesGroup/shapkit/tree/master/shapkit/monte_carlo_shapley.py#L119" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>MonteCarloShapleyBatch</code>(<strong><code>x</code></strong>, <strong><code>fc</code></strong>, <strong><code>ref</code></strong>, <strong><code>n_iter</code></strong>)</p>
+</blockquote>
+<p>Estimate the Shapley Values using an optimized Monte Carlo version in Batch mode.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -202,9 +236,10 @@ $$ Y = \prod_{j=1}^{d} \rho(X_j), $$
 <span class="k">def</span> <span class="nf">fc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">phi_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">phi_x</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fc</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">fc_batch</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">phi_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">phi_x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">fc_batch</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">d</span> <span class="o">-</span> <span class="mi">2</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dimension = </span><span class="si">{0}</span><span class="s2"> ; nb of coalitions = </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
 </pre></div>
@@ -327,7 +362,7 @@ Name: 83, dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -340,7 +375,7 @@ Name: 83, dtype: float64</pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 100/100 [00:00&lt;00:00, 5788.84it/s]
+<pre>100%|██████████| 10000/10000 [00:00&lt;00:00, 12426.16it/s]
 </pre>
 </div>
 </div>
@@ -373,11 +408,66 @@ Name: 83, dtype: float64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>x1    0.121760
-x2   -0.548766
-x3   -0.148527
-x4    0.522432
-x5    0.606513
+<pre>x1    0.114840
+x2   -0.564475
+x3   -0.149514
+x4    0.527930
+x5    0.624631
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap_batch</span> <span class="o">=</span> <span class="n">MonteCarloShapleyBatch</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc_batch</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shap_batch</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>x1    0.114435
+x2   -0.562933
+x3   -0.150034
+x4    0.535342
+x5    0.616602
 dtype: float64</pre>
 </div>
 
@@ -444,6 +534,46 @@ dtype: float64</pre>
   </thead>
   <tbody>
     <tr>
+      <th>66</th>
+      <td>0.747188</td>
+      <td>-1.188945</td>
+      <td>0.773253</td>
+      <td>-1.183881</td>
+      <td>-2.659172</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>-1.306527</td>
+      <td>1.658131</td>
+      <td>-0.118164</td>
+      <td>-0.680178</td>
+      <td>0.666383</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>-1.602058</td>
+      <td>-1.104383</td>
+      <td>0.052165</td>
+      <td>-0.739563</td>
+      <td>1.543015</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>-1.188859</td>
+      <td>-0.506816</td>
+      <td>-0.596314</td>
+      <td>-0.052567</td>
+      <td>-1.936280</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>-0.466846</td>
+      <td>-1.416906</td>
+      <td>0.868963</td>
+      <td>0.276872</td>
+      <td>-0.971105</td>
+    </tr>
+    <tr>
       <th>90</th>
       <td>-1.054628</td>
       <td>0.820248</td>
@@ -452,76 +582,36 @@ dtype: float64</pre>
       <td>0.338904</td>
     </tr>
     <tr>
+      <th>40</th>
+      <td>-0.369182</td>
+      <td>-0.239379</td>
+      <td>1.099660</td>
+      <td>0.655264</td>
+      <td>0.640132</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.156349</td>
+      <td>1.230291</td>
+      <td>1.202380</td>
+      <td>-0.387327</td>
+      <td>-0.302303</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>-0.403177</td>
+      <td>1.222445</td>
+      <td>0.208275</td>
+      <td>0.976639</td>
+      <td>0.356366</td>
+    </tr>
+    <tr>
       <th>6</th>
       <td>0.154947</td>
       <td>0.378163</td>
       <td>-0.887786</td>
       <td>-1.980796</td>
       <td>-0.347912</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>0.944479</td>
-      <td>-0.912822</td>
-      <td>1.117016</td>
-      <td>-1.315907</td>
-      <td>-0.461585</td>
-    </tr>
-    <tr>
-      <th>42</th>
-      <td>0.910179</td>
-      <td>0.317218</td>
-      <td>0.786328</td>
-      <td>-0.466419</td>
-      <td>-0.944446</td>
-    </tr>
-    <tr>
-      <th>81</th>
-      <td>0.355482</td>
-      <td>0.814520</td>
-      <td>0.058926</td>
-      <td>-0.185054</td>
-      <td>-0.807648</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>1.895889</td>
-      <td>1.178780</td>
-      <td>-0.179925</td>
-      <td>-1.070753</td>
-      <td>1.054452</td>
-    </tr>
-    <tr>
-      <th>61</th>
-      <td>-0.460720</td>
-      <td>-1.334258</td>
-      <td>-1.346718</td>
-      <td>0.693773</td>
-      <td>-0.159573</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>-0.438074</td>
-      <td>-1.252795</td>
-      <td>0.777490</td>
-      <td>-1.613898</td>
-      <td>-0.212740</td>
-    </tr>
-    <tr>
-      <th>49</th>
-      <td>-1.676004</td>
-      <td>1.152332</td>
-      <td>1.079619</td>
-      <td>-0.813364</td>
-      <td>-1.466424</td>
-    </tr>
-    <tr>
-      <th>93</th>
-      <td>2.412454</td>
-      <td>-0.960504</td>
-      <td>-0.793117</td>
-      <td>-2.288620</td>
-      <td>0.251484</td>
     </tr>
   </tbody>
 </table>
@@ -543,7 +633,7 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shaps</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">references</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shaps</span> <span class="o">=</span> <span class="n">MonteCarloShapley</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">references</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -556,7 +646,7 @@ dtype: float64</pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 1000/1000 [00:00&lt;00:00, 3358.23it/s]
+<pre>100%|██████████| 10000/10000 [00:01&lt;00:00, 7932.50it/s]
 </pre>
 </div>
 </div>
@@ -589,11 +679,66 @@ dtype: float64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>x1    0.274896
-x2   -0.413243
-x3    0.004785
-x4    0.316841
-x5    0.080387
+<pre>x1    0.191861
+x2   -0.349591
+x3    0.000489
+x4    0.220367
+x5    0.196314
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shaps_batch</span> <span class="o">=</span> <span class="n">MonteCarloShapleyBatch</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc_batch</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">references</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mc_shaps_batch</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>x1    0.188310
+x2   -0.342500
+x3    0.003739
+x4    0.210448
+x5    0.194894
 dtype: float64</pre>
 </div>
 
@@ -657,7 +802,41 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shaps</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_pred</span> <span class="o">-</span> <span class="n">references_pred</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1e-1</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shap_batch</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_pred</span> <span class="o">-</span> <span class="n">reference_pred</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1e-10</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shaps</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_pred</span> <span class="o">-</span> <span class="n">references_pred</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1e-2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mc_shaps_batch</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_pred</span> <span class="o">-</span> <span class="n">references_pred</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">1e-2</span>
 </pre></div>
 
     </div>
@@ -675,7 +854,7 @@ dtype: float64</pre>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shap</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shap</span> <span class="o">-</span> <span class="n">true_shap</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.1</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shap</span> <span class="o">-</span> <span class="n">true_shap</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-2</span>
 </pre></div>
 
     </div>
@@ -688,7 +867,7 @@ dtype: float64</pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 5/5 [00:00&lt;00:00, 325.51it/s]
+<pre>100%|██████████| 5/5 [00:00&lt;00:00, 675.48it/s]
 </pre>
 </div>
 </div>
@@ -706,8 +885,25 @@ dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shap_batch</span> <span class="o">-</span> <span class="n">true_shap</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">true_shaps</span> <span class="o">=</span> <span class="n">ShapleyValues</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">references</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shaps</span> <span class="o">-</span> <span class="n">true_shaps</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.1</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shaps</span> <span class="o">-</span> <span class="n">true_shaps</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-2</span>
 </pre></div>
 
     </div>
@@ -720,11 +916,28 @@ dtype: float64</pre>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 5/5 [00:00&lt;00:00, 38.79it/s]
+<pre>100%|██████████| 5/5 [00:00&lt;00:00, 54.69it/s]
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mc_shaps_batch</span> <span class="o">-</span> <span class="n">true_shaps</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-2</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
