@@ -37,7 +37,7 @@ import seaborn as sns
 sns.set_style("whitegrid")
 
 # Cell
-def plot_shapley(x, fc, ref, shapley_values, n_attributes, savefig=False, filename="fig.png", fig_format="png"):
+def plot_shapley(x, fc, ref, shapley_values, n_attributes, savefig=False, filename="fig.png", fig_format="png", no_show=False):
 
     # Get output for x and ref
     pred_x = fc(x.values)
@@ -109,4 +109,7 @@ def plot_shapley(x, fc, ref, shapley_values, n_attributes, savefig=False, filena
     if savefig == True:
         plt.savefig(filename, format=fig_format, bbox_inches='tight')
         print("plot saved with path {0} and {1} format".format(filename, fig_format))
-    plt.show()
+    if no_show == True:
+        return fig
+    else:
+        plt.show()

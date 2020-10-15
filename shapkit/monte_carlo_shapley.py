@@ -138,8 +138,9 @@ def MonteCarloShapleyBatch(x, fc, ref, n_iter):
 
     # Compute the matrix X of hybrid individuals between x and ref
     # and keep trace of permutation orders
-    array_of_hybrid_individuals = np.zeros(shape=(n_iter * (dimension+1), dimension))
-    orders = np.zeros(shape=(n_iter * (dimension+1),), dtype=int)
+    dtype_features = np.object if x.dtype == np.object else np.float
+    array_of_hybrid_individuals = np.empty(shape=(n_iter * (dimension+1), dimension), dtype=dtype_features)
+    orders = np.zeros(shape=(n_iter * (dimension+1),), dtype=np.int32)
 
     for iter_monte_carlo in range(n_iter):
         order = np.random.permutation(dimension)
