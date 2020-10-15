@@ -34,10 +34,12 @@ import pandas as pd
 from tqdm import tqdm
 
 # Cell
-def MonteCarloShapley(x, fc, ref, n_iter, callback=None):
+def MonteCarloShapley(x, fc, ref, n_iter, callback=None, seed=0):
     """
     Estimate the Shapley Values using an optimized Monte Carlo version.
     """
+
+    np.random.seed(seed)
 
     # Get general information
     feature_names = list(x.index)
@@ -116,10 +118,12 @@ def MonteCarloShapley(x, fc, ref, n_iter, callback=None):
     return Φ
 
 # Cell
-def MonteCarloShapleyBatch(x, fc, ref, n_iter):
+def MonteCarloShapleyBatch(x, fc, ref, n_iter, seed=0):
     """
     Estimate the Shapley Values using an optimized Monte Carlo version in Batch mode.
     """
+
+    np.random.seed(seed)
 
     # Get general information
     feature_names = list(x.index)
